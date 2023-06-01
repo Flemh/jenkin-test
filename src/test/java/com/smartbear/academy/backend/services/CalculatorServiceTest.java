@@ -2,7 +2,6 @@ package com.smartbear.academy.backend.services;
 
 import com.smartbear.academy.backend.models.AddRequest;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Assert;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -23,5 +22,20 @@ public class CalculatorServiceTest {
         // Then
 
         assertThat(result.getResult()).isEqualTo(5);
+    }
+
+    @Test
+    public void addNumbers_WhenGiven2Plus3_ShouldReturnResultOf10() {
+        // Given
+        AddRequest request = new AddRequest();
+        request.setFirstNum(6);
+        request.setSecondNum(4);
+
+        // When
+        var result = calculatorService.addNumbers(request);
+
+        // Then
+
+        assertThat(result.getResult()).isEqualTo(10);
     }
 }
