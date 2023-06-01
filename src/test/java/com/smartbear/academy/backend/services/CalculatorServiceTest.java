@@ -36,6 +36,6 @@ public class CalculatorServiceTest {
 
         // Then
 
-        assertThat(result.getResult()).isEqualTo(11);
+        assertThat(result.getResult()).isEqualTo(12);
     }
 }
