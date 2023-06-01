@@ -1,15 +1,33 @@
-# SmartBear Academy - Intro to Docker and GitHub Actions
+# Smartbear Academy - Intro to Docker and GitHub Actions - Backend
+This directory contains a Spring Boot application that will serve as the REST API 
+backend for this workshop.  
+The backend serves 3 API routes:
 
-This repo is going to be used to teach us about Docker + GitHub Actions.
-The repo contains 2 projects:
-- `backend`: A [Spring Boot v3](https://spring.io/) REST API built with [Maven](https://maven.apache.org/)
-- `frontend`: A [React v18](https://reactjs.org/) Single Page Application that talks to the `backend` API
+| Endpoint         | Example Request                      | Example Response              |
+|------------------|--------------------------------------|-------------------------------|
+| `GET /api/hello` | N/A                                  | `"Hello world!"`              |
+| `GET /api/time`  | N/A                                  | `{ "timestamp": "12:00:59" }` |
+| `POST /api/add`  | `{ "firstNum": 1, "secondNum": 2 } ` | `{ "result": 3 }`             |
 
-Instructions for running these projects can be found in the appropriate directories.
-
-## Running everything with Docker Compose
-Now that we have Docker Compose set up, we can run both services with:
+## Running locally
+This project is built using Maven.  
+To run the application quickly from the CLI:  
 ```
-docker compose up
+chmod +x ./mvnw
+
+./mvnw spring-boot:run
 ```
-Note: At this point, we only have the backend set up with docker compose, and will need to add the config for the frontend image.   
+If you open the project in Intellij, it should automatically recognise it as a Spring Boot application.
+
+Once it's ready, the API will be available at http://localhost:8080
+
+## Running with Docker
+To build and run the docker image for this app:
+```
+docker build -t sba-backend .
+```
+This will create a production with just the JAR and JRE.  
+To run the docker image:
+```
+docker run -p 8080:8080 sba-backend
+```
