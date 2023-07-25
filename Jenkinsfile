@@ -15,7 +15,7 @@ pipeline {
         stage('build') {
                     steps{
                         sh """
-                           chmod +x mvnw && ./mvnw clean package
+                           ./build.sh
                             """
                     }
         }
