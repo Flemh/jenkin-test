@@ -21,16 +21,15 @@ pipeline {
         }
 
        stage('test') {
-                           steps{
-
-                                   // JUnit Results
-                                   		junit 'target/surefire-reports/*.xml'
-
-                           }
+                     steps{
+                         // JUnit Results
+                        	junit 'target/surefire-reports/*.xml'
+                     }
                }
     }
     post {
         success {
-        archiveArtifacts allowEmptyArchive: false, artifacts: 'target/*.jar', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
+            archiveArtifacts allowEmptyArchive: false, artifacts: 'target/*.jar', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
         }
+    }
 }
