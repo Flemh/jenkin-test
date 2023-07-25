@@ -12,15 +12,21 @@ pipeline {
                 echo "this is build number $BUILD_NUMBER of demo $DEMO by $AUTHOR"
             }
         }
-        stage('shell') {
+        stage('build') {
                     steps{
                         sh """
                            chmod +x mvnw && ./mvnw clean package
                             """
-                            // JUnit Results
-                            		junit 'target/surefire-reports/*.xml'
-                            		archiveArtifacts allowEmptyArchive: false, artifacts: 'target/*.jar', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
                     }
         }
+
+       stage('test') {
+                           steps{
+
+                                   // JUnit Results
+                                   		junit 'target/surefire-reports/*.xml'
+                                   		archiveArtifacts allowEmptyArchive: false, artifacts: 'target/*.jar', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
+                           }
+               }
     }
 }
