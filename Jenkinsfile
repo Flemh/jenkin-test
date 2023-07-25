@@ -1,4 +1,4 @@
-pipeline{
+pipeline {
     agent any
 
     environment {
@@ -7,9 +7,10 @@ pipeline{
     }
 
     stages {
-     stage('stage-1') {
-        steps{
-            echo "this is build number $BUILD_NUMBER of demo $DEMO by $AUTHOR"
+        stage('stage-1') {
+            steps{
+                echo "this is build number $BUILD_NUMBER of demo $DEMO by $AUTHOR"
             }
-     }
+        }
+    }
 }
