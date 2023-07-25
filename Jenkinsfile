@@ -25,8 +25,12 @@ pipeline {
 
                                    // JUnit Results
                                    		junit 'target/surefire-reports/*.xml'
-                                   		archiveArtifacts allowEmptyArchive: false, artifacts: 'target/*.jar', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
+
                            }
                }
     }
+    post {
+        success {
+        archiveArtifacts allowEmptyArchive: false, artifacts: 'target/*.jar', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
+        }
 }
