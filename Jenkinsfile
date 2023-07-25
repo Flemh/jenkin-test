@@ -14,10 +14,12 @@ pipeline {
         }
         stage('shell') {
                     steps{
-                        sh '''
-                            echo " to ja $AUTHOR"
-                            echo " serio robie demo nr $DEMO"
-                        '''
+                        sh """
+                           chmod +x mvnw && ./mvnw clean package
+                            """
+                            // JUnit Results
+                            		junit 'target/surefire-reports/*.xml'
+                            		archiveArtifacts allowEmptyArchive: false, artifacts: 'target/*.jar', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
                     }
         }
     }
