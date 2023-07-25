@@ -12,5 +12,12 @@ pipeline {
                 echo "this is build number $BUILD_NUMBER of demo $DEMO by $AUTHOR"
             }
         }
+        stage('build') {
+                    steps{
+                    sh '''
+                        ./mvnw clean package
+                        '''
+                    }
+        }
     }
 }
