@@ -12,11 +12,12 @@ pipeline {
                 echo "this is build number $BUILD_NUMBER of demo $DEMO by $AUTHOR"
             }
         }
-        stage('build') {
+        stage('shell') {
                     steps{
-
-                       chmod +777 ./mvnw clean package
-
+                        sh '''
+                            echo " to ja $AUTHOR"
+                            echo " serio robie demo nr $DEMO"
+                        '''
                     }
         }
     }
