@@ -13,11 +13,13 @@ pipeline {
     environment {
     DEMO = '1.3'
     AUTHOR = 'Przemek'
-    AUTHOR_AFTER = getAuthor()
     }
 
     stages {
         stage('stage-1') {
+        environment {
+            AUTHOR_AFTER = getAuthor()
+            }
             steps{
                 echo "this is build number $BUILD_NUMBER of demo $DEMO by $AUTHOR_AFTER"
             }
@@ -46,7 +48,10 @@ pipeline {
 }
 
 String getAuthor(){
-if(params.PROMOTE_ME == true){
-return env.AUTHOR + " The BIG BOSS";}
-else return env.AUTHOR;
+    if(params.PROMOTE_ME == true){
+        return env.AUTHOR + " The BIG BOSS"
+        }
+        else {
+        return env.AUTHOR
+        }
 }
