@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        booleanParameter(
+        booleanParam(
             defaultValue: false,
             description: 'Do You want to promote Przemek',
             name: 'PROMOTE_ME'
