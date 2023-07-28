@@ -46,7 +46,7 @@ pipeline {
 }
 
 String getAuthor(){
-if(PROMOTE_ME == true){
-return AUTHOR+ " The BIG BOSS";}
-else return AUTHOR;
+if(params.PROMOTE_ME == true){
+return env.AUTHOR + " The BIG BOSS";}
+else return env.AUTHOR;
 }
