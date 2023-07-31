@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image: 'openjdk:17-alpine'
+            image: 'maven:3.9.3-eclipse-temurin-17'
         }
     }
 
