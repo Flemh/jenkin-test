@@ -1,8 +1,6 @@
 pipeline {
     agent {
-        docker {
-            image 'maven:3.9.3-eclipse-temurin-17'
-        }
+       any
     }
 
     parameters {
@@ -32,7 +30,7 @@ pipeline {
                     steps{
                         sh 'chmod +x build.sh'
                         sh """
-                           chmod +x mvnw && ./mvnw clean package
+                           ./build.sh
                             """
                     }
         }
