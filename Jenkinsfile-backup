@@ -25,9 +25,6 @@ pipeline {
                 echo "this is build number $BUILD_NUMBER of demo $DEMO by $AUTHOR_AFTER"
             }
         }
-        stage('install-codeQl') {
-                installCodeQL()
-                }
         stage('build') {
                     steps{
                         sh 'chmod +x build.sh'
@@ -51,10 +48,7 @@ pipeline {
     }
 }
 
-def installCodeQL() {
-      sh 'cd /tmp && test -f /tmp/codeql-runner-linux || curl -O -L  https://github.com/github/codeql-action/releases/latest/download/codeql-runner-linux'
-      sh 'chmod a+x /tmp/codeql-runner-linux'
-}
+Jenkinsfile2
 
 String getAuthor(){
     if(params.PROMOTE_ME == true){
