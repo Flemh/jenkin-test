@@ -29,7 +29,7 @@ pipeline {
                 steps{
                     installCodeQL()
                     withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'ghe_token')]) {
-                                sh "/tmp/codeql-runner-linux init --repository ${getRepoSlug()} --github-url https://github.com --github-auth \$ghe_token --languages java,javascript --config-file .github/codeq-config.yml"
+                                sh "/tmp/codeql-runner-linux init --repository Flemh/jenkin-test --github-url https://github.com --github-auth \$ghe_token --languages java,javascript --config-file .github/codeq-config.yml"
                           }
                     }
                 }
