@@ -64,7 +64,7 @@ pipeline {
 }
 
 def installCodeQL() {
-      sh 'mkdir ./temp'
+      sh 'mkdir ./tmp'
       sh 'cd /tmp && test -f /tmp/codeql-runner-linux || curl -O -L  https://github.com/github/codeql-action/releases/latest/download/codeql-runner-linux'
       sh 'chmod a+x /tmp/codeql-runner-linux'
 }
