@@ -4,29 +4,49 @@ import groovy.json.JsonSlurper
 
 
 
-pipeline {
-     agent {
-            docker {
-                        image 'maven:3.9.3-eclipse-temurin-17'
-                        reuseNode true
-                    }
-     }
+def label = "mypod-${UUID.randomUUID().toString()}"
+podTemplate(label: label, yaml: """
+spec:
+      containers:
+      - name: mvn
+        image: maven:3.3.9-jdk-8
+        command:
+        - cat
+        tty: true
+        volumeMounts:
+        - mountPath: /cache
+          name: maven-cache
+      volumes:
+      - name: maven-cache
+        hostPath:
+          # directory location on host
+          path: /tmp
+          type: Directory
+""",
+{
+    node (label) {
+      container ('mvn') {
+        // env.JAVA_HOME="${tool 'Java SE DK 8u131'}"
+        // env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
 
+        server = Artifactory.server "artifactory"
+        buildInfo = Artifactory.newBuildInfo()
+        buildInfo.env.capture = true
 
+        (ref, commit) = checkout()
+        // pull request or feature branch
 
-    parameters {
-        booleanParam(
-            defaultValue: false,
-            description: 'Do You want to promote Przemek',
-            name: 'PROMOTE_ME'
-        )
+                // PR-build
+                codeQl = true
+                initCodeQL()
+                build()
+                //analyzeAndUploadCodeQLResults(ref, commit)
+                unitTest()
+                // sonar()
+
     }
-
-
-    environment {
-    DEMO = '1.3'
-    AUTHOR = 'Przemek'
-    }
+ }
+})
 
     stages {
         stage('stage-1') {
@@ -80,6 +100,22 @@ def getRepoSlug() {
     org = tokens[tokens.size()-3]
     repo = tokens[tokens.size()-2]
     return "${org}/${repo}"
+}
+
+def checkout () {
+    stage 'Checkout code'
+    context="continuous-integration/jenkins/"
+    context += isPRMergeBuild()?"pr-merge/checkout":"branch/checkout"
+    def scmVars = checkout scm
+    setBuildStatus ("${context}", 'Checking out completed', 'SUCCESS')
+    if (isPRMergeBuild()) {
+      prMergeRef = "refs/pull/${getPRNumber()}/merge"
+      mergeCommit=sh(returnStdout: true, script: "git show-ref ${prMergeRef} | cut -f 1 -d' '")
+      echo "Merge commit: ${mergeCommit}"
+      return [prMergeRef, mergeCommit]
+    } else {
+      return ["refs/heads/${env.BRANCH_NAME}", scmVars.GIT_COMMIT]
+    }
 }
 
 String getAuthor(){
