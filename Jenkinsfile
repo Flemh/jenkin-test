@@ -1,52 +1,24 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
-def label = "mypod-${UUID.randomUUID().toString()}"
-podTemplate(label: label, yaml: """
-spec:
-      containers:
-      - name: mvn
-        image: maven:3.3.9-jdk-8
-        command:
-        - cat
-        tty: true
-        volumeMounts:
-        - mountPath: /cache
-          name: maven-cache
-      volumes:
-      - name: maven-cache
-        hostPath:
-          # directory location on host
-          path: /tmp
-          type: Directory
-""",
-{
-    node (label) {
-      container ('mvn') {
-        // env.JAVA_HOME="${tool 'Java SE DK 8u131'}"
-        // env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
 
-        server = Artifactory.server "artifactory"
-        buildInfo = Artifactory.newBuildInfo()
-        buildInfo.env.capture = true
-
-        //(ref, commit) = checkout()
-        // pull request or feature branch
-
-                // PR-build
-                codeQl = true
-                initCodeQL()
-                build()
-                analyzeAndUploadCodeQLResults(ref, commit)
-                unitTest()
-                // sonar()
-
-    }
- }
-})
 
 pipeline {
-    agent any
+     agent {
+            docker { image 'maven:3.8.3-openjdk-17'
+             command:
+                     - cat
+                     tty: true
+                     volumeMounts:
+                     - mountPath: /cache
+                       name: maven-cache
+                   volumes:
+                   - name: maven-cache
+                     hostPath:
+                       # directory location on host
+                       path: /tmp
+                       type: Directory}
+        }
 
 
     parameters {
@@ -104,6 +76,7 @@ pipeline {
 }
 
 def installCodeQL() {
+
       sh 'cd /tmp && test -f /tmp/codeql-runner-linux || curl -O -L  https://github.com/github/codeql-action/releases/latest/download/codeql-runner-linux'
       sh 'chmod a+x /tmp/codeql-runner-linux'
 }
