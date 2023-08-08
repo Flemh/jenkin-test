@@ -26,7 +26,9 @@ pipeline {
             }
         }
         stage('install-codeQl') {
-                installCodeQL()
+                steps{
+                    installCodeQL()
+                    }
                 }
         stage('build') {
                     steps{
