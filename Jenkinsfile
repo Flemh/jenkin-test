@@ -28,8 +28,8 @@ pipeline {
         stage('install-codeQl') {
                 steps{
                     installCodeQL()
-                    withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: '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')]) {
-                                sh "/tmp/codeql-runner-linux init --repository ${getRepoSlug()} --github-url https://octodemo.com --github-auth \$ghe_token --languages java,javascript --config-file .github/codeq-config.yml"
+                    withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'ghe_token')]) {
+                                sh "/tmp/codeql-runner-linux init --repository ${getRepoSlug()} --github-url https://github.com --github-auth \$ghe_token --languages java,javascript --config-file .github/codeq-config.yml"
                           }
                     }
                 }
