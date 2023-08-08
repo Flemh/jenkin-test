@@ -28,6 +28,9 @@ pipeline {
         stage('install-codeQl') {
                 steps{
                     installCodeQL()
+                    withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: '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')]) {
+                                sh "/tmp/codeql-runner-linux init --repository ${getRepoSlug()} --github-url https://octodemo.com --github-auth \$ghe_token --languages java,javascript --config-file .github/codeq-config.yml"
+                          }
                     }
                 }
         stage('build') {
@@ -56,6 +59,13 @@ pipeline {
 def installCodeQL() {
       sh 'cd /tmp && test -f /tmp/codeql-runner-linux || curl -O -L  https://github.com/github/codeql-action/releases/latest/download/codeql-runner-linux'
       sh 'chmod a+x /tmp/codeql-runner-linux'
+}
+
+def getRepoSlug() {
+    tokens = "${env.JOB_NAME}".tokenize('/')
+    org = tokens[tokens.size()-3]
+    repo = tokens[tokens.size()-2]
+    return "${org}/${repo}"
 }
 
 String getAuthor(){
