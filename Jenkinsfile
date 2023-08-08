@@ -47,82 +47,36 @@ spec:
     }
  }
 })
-
-    stages {
-        stage('stage-1') {
-        environment {
-            AUTHOR_AFTER = getAuthor()
-            }
-            steps{
-                echo "this is build number $BUILD_NUMBER of demo $DEMO by $AUTHOR_AFTER"
-
-            }
-        }
-        stage('install-codeQl') {
-                steps{
-                    installCodeQL()
-                    withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'ghe_token')]) {
-                                sh "/tmp/codeql-runner-linux init --repository Flemh/jenkin-test --github-url https://github.com --github-auth \$ghe_token --languages java,javascript --config-file .github/codeq-config.yml"
-                          }
-                    }
-                }
-        stage('build') {
-                    steps{
-                        sh 'chmod +x build.sh'
-                        sh """
-                           ./build.sh
-                            """
-                    }
-        }
-
-       stage('test') {
-                     steps{
-                         // JUnit Results
-                        	junit 'target/surefire-reports/*.xml'
-                     }
-               }
-    }
-    post {
-        success {
-            archiveArtifacts allowEmptyArchive: false, artifacts: 'target/*.jar', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
-        }
-    }
-}
-
 def installCodeQL() {
-      sh 'mkdir ./tmp'
       sh 'cd /tmp && test -f /tmp/codeql-runner-linux || curl -O -L  https://github.com/github/codeql-action/releases/latest/download/codeql-runner-linux'
       sh 'chmod a+x /tmp/codeql-runner-linux'
 }
 
-def getRepoSlug() {
-    tokens = "${env.JOB_NAME}".tokenize('/')
-    org = tokens[tokens.size()-3]
-    repo = tokens[tokens.size()-2]
-    return "${org}/${repo}"
+def initCodeQL() {
+      stage 'Init CodeQL'
+      installCodeQL()
+      withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'ghe_token')]) {
+            sh "/tmp/codeql-runner-linux init --repository Flemh/jenkin-test --github-url https://octodemo.com --github-auth \$ghe_token --languages java,javascript --config-file .github/codeq-config.yml"
+      }
 }
 
-def checkout () {
-    stage 'Checkout code'
-    context="continuous-integration/jenkins/"
-    context += isPRMergeBuild()?"pr-merge/checkout":"branch/checkout"
-    def scmVars = checkout scm
-    setBuildStatus ("${context}", 'Checking out completed', 'SUCCESS')
-    if (isPRMergeBuild()) {
-      prMergeRef = "refs/pull/${getPRNumber()}/merge"
-      mergeCommit=sh(returnStdout: true, script: "git show-ref ${prMergeRef} | cut -f 1 -d' '")
-      echo "Merge commit: ${mergeCommit}"
-      return [prMergeRef, mergeCommit]
-    } else {
-      return ["refs/heads/${env.BRANCH_NAME}", scmVars.GIT_COMMIT]
-    }
+def build () {
+    stage 'Build'
+    mvn 'clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dcheckstyle.skip=true -B -V'
 }
 
-String getAuthor(){
-    if(params.PROMOTE_ME == true){
-        return env.AUTHOR + " The BIG BOSS"
-        }
-        else {
-        return env.AUTHOR
-        }
+def mvn(args) {
+    withMaven(
+        // mavenSettingsConfig: '0e94d6c3-b431-434f-a201-7d7cda7180cb'
+
+        //mavenLocalRepo: '/tmp/m2'
+        ) {
+
+      // Run the maven build
+          if (codeQl) {
+            sh ". codeql-runner/codeql-env.sh && mvn $args -Dmaven.test.failure.ignore -Dmaven.repo.local=/cache"
+          } else {
+            sh "mvn $args -Dmaven.test.failure.ignore -Dmaven.repo.local=/cache"
+          }
+     }
 }
