@@ -5,19 +5,7 @@ import groovy.json.JsonSlurper
 
 pipeline {
      agent {
-            docker { image 'maven:3.8.3-openjdk-17'
-             command:
-                     - cat
-                     tty: true
-                     volumeMounts:
-                     - mountPath: /cache
-                       name: maven-cache
-                   volumes:
-                   - name: maven-cache
-                     hostPath:
-                       # directory location on host
-                       path: /tmp
-                       type: Directory}
+            docker { image 'maven:3.8.3-openjdk-17'}
         }
 
 
@@ -76,7 +64,7 @@ pipeline {
 }
 
 def installCodeQL() {
-
+      sh 'mkdir ./temp'
       sh 'cd /tmp && test -f /tmp/codeql-runner-linux || curl -O -L  https://github.com/github/codeql-action/releases/latest/download/codeql-runner-linux'
       sh 'chmod a+x /tmp/codeql-runner-linux'
 }
