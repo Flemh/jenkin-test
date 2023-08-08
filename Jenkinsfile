@@ -13,7 +13,6 @@ pipeline {
                 }
             }
             steps {
-                sh 'chmod -R 755 /var/jenkins_home/workspace'
                 sh 'mvn --version'
 
             }
