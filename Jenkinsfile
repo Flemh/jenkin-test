@@ -4,9 +4,8 @@ import groovy.json.JsonSlurper
 
 
 pipeline {
-     agent {
-            docker { image 'maven:3.8.3-openjdk-17'}
-        }
+     agent any
+     }
 
 
     parameters {
@@ -30,6 +29,7 @@ pipeline {
             }
             steps{
                 echo "this is build number $BUILD_NUMBER of demo $DEMO by $AUTHOR_AFTER"
+
             }
         }
         stage('install-codeQl') {
