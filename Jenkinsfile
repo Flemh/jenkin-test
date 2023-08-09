@@ -1,10 +1,13 @@
 pipeline {
     agent any
-    stages {
+
+    node {
         stage('Build') {
-                 withCodeQL(codeql: 'CodeQL 2.14.2') {
-                    sh 'codeql --version'
-                }
+             withCodeQL(codeql: 'CodeQL 2.5.5') {
+                sh 'codeql --version'
+            }
+        }
+    }
            /*  agent {
                 dockerContainer {
                     image 'maven:3.9.3-eclipse-temurin-17-alpine'
@@ -17,7 +20,7 @@ pipeline {
             steps {
                 sh 'mvn --version'
 
-            } */
-        }
-    }
+            }
+        }*/
+    //}
 }
