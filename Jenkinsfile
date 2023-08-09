@@ -3,7 +3,7 @@ pipeline {
 
     node {
         stage('Build') {
-             withCodeQL(codeql: 'CodeQL 2.5.5') {
+             withCodeQL(codeql: 'CodeQL 2.14.2') {
                 sh 'codeql --version'
             }
         }
@@ -21,6 +21,6 @@ pipeline {
                 sh 'mvn --version'
 
             }
-        }*/
-    //}
+        }
+    }*/
 }
